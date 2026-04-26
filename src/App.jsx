@@ -76,10 +76,10 @@ export default function App() {
   // 🔥 TOTAL
   const grandTotal = data.reduce((acc, item) => acc + item.total, 0);
 
-  // 🔥 REMAINING CASH (overall)
+  // 🔥 REMAINING CASH
   const remainingCash = initialCash - grandTotal;
 
-  // 🔥 RUNNING CASH (per entry)
+  // 🔥 RUNNING CASH
   let running = initialCash;
   const dataWithRunning = data.map((item) => {
     running -= item.total;
@@ -171,7 +171,13 @@ export default function App() {
             <div className="flex justify-between">
               <div>
                 <p className="text-sm text-gray-400">{item.date}</p>
+
                 <p className="font-bold">{item.vehicleNo}</p>
+
+                {/* 🔥 Running Cash under vehicle */}
+                <p className="text-yellow-400 text-sm font-semibold">
+                  Balance: ₹ {item.balance}
+                </p>
               </div>
 
               <button
@@ -189,11 +195,6 @@ export default function App() {
 
             <div className="text-emerald-400 font-bold mt-2">
               ₹ {item.total}
-            </div>
-
-            {/* 🔥 Running Cash */}
-            <div className="text-yellow-400 font-bold mt-1">
-              Balance: ₹ {item.balance}
             </div>
           </div>
         ))}
