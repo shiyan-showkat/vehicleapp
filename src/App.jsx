@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 export default function App() {
-  // 👉 function banaya taki har baar fresh date mile
   const getToday = () => new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useState({
@@ -12,11 +11,15 @@ export default function App() {
   });
 
   const [data, setData] = useState([]);
+  const [initialCash, setInitialCash] = useState(0);
 
   // Load
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("expenses")) || [];
+    const cash = JSON.parse(localStorage.getItem("cash")) || 0;
+
     setData(saved);
+    setInitialCash(cash);
   }, []);
 
   // Save
@@ -24,7 +27,11 @@ export default function App() {
     localStorage.setItem("expenses", JSON.stringify(data));
   }, [data]);
 
-  // 👉 Auto update date every minute (midnight fix)
+  useEffect(() => {
+    localStorage.setItem("cash", JSON.stringify(initialCash));
+  }, [initialCash]);
+
+  // Auto date update
   useEffect(() => {
     const interval = setInterval(() => {
       setForm((prev) => ({
@@ -54,7 +61,6 @@ export default function App() {
 
     setData([newEntry, ...data]);
 
-    // 👉 Reset with fresh date
     setForm({
       date: getToday(),
       vehicleNo: "",
@@ -69,6 +75,9 @@ export default function App() {
 
   const grandTotal = data.reduce((acc, item) => acc + item.total, 0);
 
+  // 👉 Running Cash
+  const remainingCash = initialCash - grandTotal;
+
   return (
     <div className="min-h-screen bg-[#051424] text-white p-4">
       {/* Navbar */}
@@ -77,10 +86,30 @@ export default function App() {
         <span className="text-sm text-gray-400">Tracker</span>
       </div>
 
-      {/* Total */}
+      {/* Cash Input */}
       <div className="bg-[#122131] p-4 rounded-2xl mb-4">
-        <p className="text-sm text-gray-400">Total Expense</p>
-        <h2 className="text-2xl font-bold text-emerald-400">₹ {grandTotal}</h2>
+        <p className="text-sm text-gray-400">Set Initial Cash</p>
+        <input
+          type="number"
+          value={initialCash}
+          onChange={(e) => setInitialCash(Number(e.target.value))}
+          className="w-full p-2 mt-2 rounded bg-[#0d1c2d]"
+        />
+      </div>
+
+      {/* Total + Balance */}
+      <div className="bg-[#122131] p-4 rounded-2xl mb-4 flex justify-between">
+        <div>
+          <p className="text-sm text-gray-400">Total Expense</p>
+          <h2 className="text-xl text-red-400 font-bold">₹ {grandTotal}</h2>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-400">Remaining Cash</p>
+          <h2 className="text-xl text-emerald-400 font-bold">
+            ₹ {remainingCash}
+          </h2>
+        </div>
       </div>
 
       {/* Form */}
