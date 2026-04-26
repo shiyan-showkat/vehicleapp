@@ -75,8 +75,12 @@ export default function App() {
 
   const grandTotal = data.reduce((acc, item) => acc + item.total, 0);
 
-  // 👉 Running Cash
-  const remainingCash = initialCash - grandTotal;
+  // 🔥 Running Cash Logic
+  let running = initialCash;
+  const dataWithRunning = data.map((item) => {
+    running -= item.total;
+    return { ...item, balance: running };
+  });
 
   return (
     <div className="min-h-screen bg-[#051424] text-white p-4">
@@ -86,7 +90,7 @@ export default function App() {
         <span className="text-sm text-gray-400">Tracker</span>
       </div>
 
-      {/* Cash Input */}
+      {/* Initial Cash */}
       <div className="bg-[#122131] p-4 rounded-2xl mb-4">
         <p className="text-sm text-gray-400">Set Initial Cash</p>
         <input
@@ -97,19 +101,10 @@ export default function App() {
         />
       </div>
 
-      {/* Total + Balance */}
-      <div className="bg-[#122131] p-4 rounded-2xl mb-4 flex justify-between">
-        <div>
-          <p className="text-sm text-gray-400">Total Expense</p>
-          <h2 className="text-xl text-red-400 font-bold">₹ {grandTotal}</h2>
-        </div>
-
-        <div>
-          <p className="text-sm text-gray-400">Remaining Cash</p>
-          <h2 className="text-xl text-emerald-400 font-bold">
-            ₹ {remainingCash}
-          </h2>
-        </div>
+      {/* Total */}
+      <div className="bg-[#122131] p-4 rounded-2xl mb-4">
+        <p className="text-sm text-gray-400">Total Expense</p>
+        <h2 className="text-xl text-red-400 font-bold">₹ {grandTotal}</h2>
       </div>
 
       {/* Form */}
@@ -160,8 +155,8 @@ export default function App() {
 
       {/* List */}
       <div className="space-y-3">
-        {data.map((item) => (
-          <div key={item.id} className="bg-[#122131] p-3 rounded-xl">
+        {dataWithRunning.map((item) => (
+          <div key={item.id} className="bg-[#122131] p-3 rounded-xl shadow">
             <div className="flex justify-between">
               <div>
                 <p className="text-sm text-gray-400">{item.date}</p>
@@ -183,6 +178,11 @@ export default function App() {
 
             <div className="text-emerald-400 font-bold mt-2">
               ₹ {item.total}
+            </div>
+
+            {/* 🔥 Running Cash */}
+            <div className="text-yellow-400 font-bold mt-1">
+              Balance: ₹ {item.balance}
             </div>
           </div>
         ))}
