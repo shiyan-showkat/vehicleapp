@@ -8,6 +8,7 @@ export default function App() {
     vehicleNo: "",
     fastag: "",
     diesel: "",
+    driverCash: "",
   });
 
   const [data, setData] = useState([]);
@@ -51,7 +52,9 @@ export default function App() {
     if (!form.vehicleNo) return;
 
     const total =
-      (parseFloat(form.fastag) || 0) + (parseFloat(form.diesel) || 0);
+      (parseFloat(form.fastag) || 0) +
+      (parseFloat(form.diesel) || 0) +
+      (parseFloat(form.driverCash) || 0);
 
     const newEntry = {
       ...form,
@@ -66,6 +69,7 @@ export default function App() {
       vehicleNo: "",
       fastag: "",
       diesel: "",
+      driverCash: "",
     });
   };
 
@@ -73,13 +77,13 @@ export default function App() {
     setData(data.filter((item) => item.id !== id));
   };
 
-  // 🔥 TOTAL
+  // TOTAL
   const grandTotal = data.reduce((acc, item) => acc + item.total, 0);
 
-  // 🔥 REMAINING CASH
+  // REMAINING CASH
   const remainingCash = initialCash - grandTotal;
 
-  // 🔥 RUNNING CASH
+  // RUNNING CASH
   let running = initialCash;
   const dataWithRunning = data.map((item) => {
     running -= item.total;
@@ -143,7 +147,7 @@ export default function App() {
             name="fastag"
             value={form.fastag}
             onChange={handleChange}
-            className="w-1/2 p-2 rounded bg-[#0d1c2d]"
+            className="w-1/3 p-2 rounded bg-[#0d1c2d]"
           />
 
           <input
@@ -152,7 +156,16 @@ export default function App() {
             name="diesel"
             value={form.diesel}
             onChange={handleChange}
-            className="w-1/2 p-2 rounded bg-[#0d1c2d]"
+            className="w-1/3 p-2 rounded bg-[#0d1c2d]"
+          />
+
+          <input
+            type="number"
+            placeholder="Driver Cash"
+            name="driverCash"
+            value={form.driverCash}
+            onChange={handleChange}
+            className="w-1/3 p-2 rounded bg-[#0d1c2d]"
           />
         </div>
 
@@ -191,6 +204,7 @@ export default function App() {
             <div className="flex justify-between text-sm mt-2">
               <span>FASTag: ₹{item.fastag || 0}</span>
               <span>Diesel: ₹{item.diesel || 0}</span>
+              <span>Driver: ₹{item.driverCash || 0}</span>
             </div>
 
             <div className="text-emerald-400 font-bold mt-2">
