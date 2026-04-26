@@ -73,9 +73,13 @@ export default function App() {
     setData(data.filter((item) => item.id !== id));
   };
 
+  // 🔥 TOTAL
   const grandTotal = data.reduce((acc, item) => acc + item.total, 0);
 
-  // 🔥 Running Cash Logic
+  // 🔥 REMAINING CASH (overall)
+  const remainingCash = initialCash - grandTotal;
+
+  // 🔥 RUNNING CASH (per entry)
   let running = initialCash;
   const dataWithRunning = data.map((item) => {
     running -= item.total;
@@ -101,10 +105,17 @@ export default function App() {
         />
       </div>
 
-      {/* Total */}
-      <div className="bg-[#122131] p-4 rounded-2xl mb-4">
-        <p className="text-sm text-gray-400">Total Expense</p>
-        <h2 className="text-xl text-red-400 font-bold">₹ {grandTotal}</h2>
+      {/* Summary */}
+      <div className="bg-[#122131] p-4 rounded-2xl mb-4 flex justify-between">
+        <div>
+          <p className="text-sm text-gray-400">Total Expense</p>
+          <h2 className="text-red-400 font-bold">₹ {grandTotal}</h2>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-400">Remaining Cash</p>
+          <h2 className="text-emerald-400 font-bold">₹ {remainingCash}</h2>
+        </div>
       </div>
 
       {/* Form */}
@@ -156,7 +167,7 @@ export default function App() {
       {/* List */}
       <div className="space-y-3">
         {dataWithRunning.map((item) => (
-          <div key={item.id} className="bg-[#122131] p-3 rounded-xl shadow">
+          <div key={item.id} className="bg-[#122131] p-3 rounded-xl">
             <div className="flex justify-between">
               <div>
                 <p className="text-sm text-gray-400">{item.date}</p>
